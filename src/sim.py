@@ -163,14 +163,15 @@ def sim_lif_pop_fully_connected(J, E, N=1000, tstop=100, dt=.01, B=1, v_th=1, p=
     return v, spktimes
 
 
-def sim_lif_perturbation(J, E, tstop=100, dt=.01, B=1, v_th=1, p=1, v_r=0, perturb_start=None, perturb_len=10, perturb_amp=1.5, perturb_ind=None):
+def sim_lif_perturbation(J, E_l, E_s, tstop=100, dt=.01, B=1, v_th=1, p=1, v_r=0, perturb_start=None, perturb_len=10, perturb_amp=1.5, perturb_ind=None):
 
     '''
     Simulate an LIF network with a perturbation to E.
     If perturb_start=None, at times tstop/4 a postive perturbation is applied, and at 3/4 tstop a negative perturbation.
 
     J: connectivity matrix, NxN
-    E: resting potential
+    E_l: resting potential (E leak)
+    E_s: conductance term (E_syn)
     '''
 
     Nt = int(tstop / dt)
@@ -180,14 +181,23 @@ def sim_lif_perturbation(J, E, tstop=100, dt=.01, B=1, v_th=1, p=1, v_r=0, pertu
     else:
         N = 1
     
-    if len(np.shape(E)) == 0:
-        E0 = E * np.ones(N,)
-    elif len(E) == N:
-        E0 = np.array(E)
+    if len(np.shape(E_l)) == 0:
+        E0 = E_l * np.ones(N,)
+    elif len(E_l) == N:
+        E0 = np.array(E_l)
     else:
         raise Exception('Need either a scalar or length N input E')
 
     print(E0.shape)
+
+    # if len(np.shape(E_s)) == 0:
+    #     E1 = E_s * np.ones(N,)
+    # elif len(E_s) == N:
+    #     E1 = np.array(E_s)
+    # else:
+    #     raise Exception('Need either a scalar or length N input E')
+
+    # print(E1.shape)
 
     if perturb_ind is None:
         perturb_ind = range(N)
@@ -213,19 +223,20 @@ def sim_lif_perturbation(J, E, tstop=100, dt=.01, B=1, v_th=1, p=1, v_r=0, pertu
 
     spktimes = []
 
-    E = E0.copy()
+    E_l = E0.copy()
+    # E_s = E1.copy()
 
     for t in range(1, Nt):
 
         if (t >= t_start_perturb1) and (t < t_end_perturb1):
-            E[perturb_ind] = E0[perturb_ind] + perturb_amp
+            E_l[perturb_ind] = E0[perturb_ind] + perturb_amp
         elif (t >= t_start_perturb2) and (t < t_end_perturb2):
-            E[perturb_ind] = E0[perturb_ind] - perturb_amp
+            E_l[perturb_ind] = E0[perturb_ind] - perturb_amp
         else:
-            E[perturb_ind] = E0[perturb_ind]
+            E_l[perturb_ind] = E0[perturb_ind]
 
         # v[t] = v[t-1] + dt*(-v[t-1] + E) - n*(v[t-1]-v_r) + J.dot(n)
-        v[t] = v[t-1] + dt*(-v[t-1] + E) + J.dot(n)
+        v[t] = v[t-1] + dt*(-v[t-1] + E_l) + J.dot(n) * (E_s-v[t-1])
         v[t, spkind] = v_r # reset
 
         lam = intensity(v[t], B=B, v_th=v_th, p=p)
