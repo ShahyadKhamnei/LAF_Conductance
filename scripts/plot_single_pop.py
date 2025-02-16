@@ -89,7 +89,7 @@ def plot_fig_single_pop_weakly_coupled(savefile=os.path.join(results_dir, 'fig_h
     E = 1.5
     g = 5
     J = np.random.binomial(n=1, p=connection_prob, size=(N,N)) * g / connection_prob / N
-    _, spktimes = sim_lif_perturbation(J=J, E=E, tstop=tstop, dt=dt, perturb_len=perturb_len, perturb_amp=perturb_amp)
+    _, spktimes = sim_lif_perturbation(J=J, E_l=E, E_s=1/2, tstop=tstop, dt=dt, perturb_len=perturb_len, perturb_amp=perturb_amp)
 
     ax[0, 0].plot(g, E, 'ko')
     ax[0, 1].plot(spktimes[:, 0], spktimes[:, 1], 'k|', markersize=.5)
@@ -98,7 +98,7 @@ def plot_fig_single_pop_weakly_coupled(savefile=os.path.join(results_dir, 'fig_h
     E = 0
     g = 2 + 27/16 * np.sqrt(3) * np.sqrt(1-E) - 1
     J = np.random.binomial(n=1, p=connection_prob, size=(N,N)) * g / connection_prob / N
-    _, spktimes = sim_lif_perturbation(J=J, E=E, tstop=tstop, dt=dt, perturb_len=perturb_len, perturb_amp=perturb_amp)
+    _, spktimes = sim_lif_perturbation(J=J, E_l=E, E_s=1/2, tstop=tstop, dt=dt, perturb_len=perturb_len, perturb_amp=perturb_amp)
 
     ax[0, 0].plot(g, E, 'ks')
     ax[1, 0].plot(spktimes[:, 0], spktimes[:, 1], 'k|', markersize=.5)
@@ -108,7 +108,7 @@ def plot_fig_single_pop_weakly_coupled(savefile=os.path.join(results_dir, 'fig_h
     g = 6
     J = np.random.binomial(n=1, p=connection_prob, size=(N,N)) * g / connection_prob / N
 
-    _, spktimes = sim_lif_perturbation(J=J, E=E, tstop=tstop, dt=dt, perturb_len=perturb_len, perturb_amp=perturb_amp)
+    _, spktimes = sim_lif_perturbation(J=J, E_l=E, E_s=1/2, tstop=tstop, dt=dt, perturb_len=perturb_len, perturb_amp=perturb_amp)
 
     ax[0, 0].plot(g, E, 'kX')
     ax[1, 1].plot(spktimes[:, 0], spktimes[:, 1], 'k|', markersize=.5)

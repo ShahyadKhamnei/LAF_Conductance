@@ -190,15 +190,6 @@ def sim_lif_perturbation(J, E_l, E_s, tstop=100, dt=.01, B=1, v_th=1, p=1, v_r=0
 
     print(E0.shape)
 
-    # if len(np.shape(E_s)) == 0:
-    #     E1 = E_s * np.ones(N,)
-    # elif len(E_s) == N:
-    #     E1 = np.array(E_s)
-    # else:
-    #     raise Exception('Need either a scalar or length N input E')
-
-    # print(E1.shape)
-
     if perturb_ind is None:
         perturb_ind = range(N)
 
@@ -224,7 +215,6 @@ def sim_lif_perturbation(J, E_l, E_s, tstop=100, dt=.01, B=1, v_th=1, p=1, v_r=0
     spktimes = []
 
     E_l = E0.copy()
-    # E_s = E1.copy()
 
     for t in range(1, Nt):
 
